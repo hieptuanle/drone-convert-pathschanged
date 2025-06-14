@@ -35,6 +35,7 @@ type (
 		BitBucketUser     string `envconfig:"BITBUCKET_USER"`
 		BitBucketPassword string `envconfig:"BITBUCKET_PASSWORD"`
 		GithubServer      string `envconfig:"GITHUB_SERVER"`
+		GiteaServer       string `envconfig:"GITEA_SERVER"`
 		StashServer       string `envconfig:"STASH_SERVER"`
 	}
 )
@@ -60,6 +61,7 @@ func validate(spec *spec) error {
 			// bitbucket-server support is deprecated in favor of stash, it will be removed in a future version
 			"bitbucket-server",
 			"github",
+			"gitea",
 			"stash",
 			"gitee",
 		}
@@ -67,7 +69,7 @@ func validate(spec *spec) error {
 			return fmt.Errorf("unsupported provider")
 		}
 	}
-	if spec.Token == "" && (spec.Provider == "github" || spec.Provider == "bitbucket-server" || spec.Provider == "stash") {
+	if spec.Token == "" && (spec.Provider == "github" || spec.Provider == "bitbucket-server" || spec.Provider == "stash" || spec.Provider == "gitea") {
 		return fmt.Errorf("missing token")
 	}
 	if spec.BitBucketUser == "" && spec.Provider == "bitbucket" {
@@ -91,6 +93,10 @@ func validate(spec *spec) error {
 
 	if spec.Token == "" && spec.Provider == "gitee" {
 		return fmt.Errorf("missing gitee token")
+	}
+
+	if spec.GiteaServer == "" && spec.Provider == "gitea" {
+		return fmt.Errorf("missing gitea server")
 	}
 
 	return nil
@@ -130,6 +136,7 @@ func main() {
 		BitBucketUser:     spec.BitBucketUser,
 		BitBucketPassword: spec.BitBucketPassword,
 		GithubServer:      spec.GithubServer,
+		GiteaServer:       spec.GiteaServer,
 		Token:             spec.Token,
 		StashServer:       spec.StashServer,
 	}

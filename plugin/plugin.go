@@ -25,6 +25,7 @@ type (
 		BitBucketUser     string
 		BitBucketPassword string
 		GithubServer      string
+		GiteaServer       string
 		StashServer       string
 		Token             string
 	}
@@ -172,6 +173,11 @@ func (p *plugin) Convert(ctx context.Context, req *converter.Request) (*drone.Co
 			}
 		case "gitee":
 			changedFiles, err = providers.GetGiteeFilesChanged(req.Repo, req.Build, p.params.Token)
+			if err != nil {
+				return nil, err
+			}
+		case "gitea":
+			changedFiles, err = providers.GetGiteaFilesChanged(req.Repo, req.Build, p.params.Token, p.params.GiteaServer)
 			if err != nil {
 				return nil, err
 			}

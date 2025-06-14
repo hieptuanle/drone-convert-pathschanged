@@ -1,11 +1,12 @@
-# ⚠️ Deprecation Warning ⚠️
-This repository has been deprecated and will no longer be maintained.
-
-# Drone Conversion Extension: Paths Changed | [![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+# Drone Conversion Extension: Paths Changed
 
 A [Drone](https://drone.io/) [conversion extension](https://docs.drone.io/extensions/conversion/) to include/exclude pipelines and steps based on paths changed.
 
 _Please note this project requires Drone server version 1.4 or higher._
+
+## Fork of meltwater/drone-convert-pathschanged
+
+This is a fork of the meltwater/drone-convert-pathschanged project. This fork adds support for Gitea. The original project is no longer maintained and has been archived.
 
 ## Installation
 
@@ -32,7 +33,9 @@ $ docker run -d \
   --restart=always \
   --name=converter meltwater/drone-convert-pathschanged
 ```
+
 If you wish to use an enviroment file you can pass it when starting the container :
+
 ```console
 $ docker run -d \
 ...
@@ -82,7 +85,7 @@ DRONE_CONVERT_PLUGIN_SECRET=bea26a2221fd8090ea38720fc445eca6
 
 1.  Create an "App password" via https://bitbucket.org/account/settings/app-passwords and select only "Read" under "Repositories"
 
-2. Create a shared secret:
+2.  Create a shared secret:
 
 ```console
 $ openssl rand -hex 16
@@ -173,6 +176,38 @@ DRONE_CONVERT_PLUGIN_ENDPOINT=http://1.2.3.4:3000
 DRONE_CONVERT_PLUGIN_SECRET=bea26a2221fd8090ea38720fc445eca6
 ```
 
+## Gitea
+
+1. Create a Gitea access token via https://your-gitea-server/user/settings/applications with the scope of `repo`.
+
+2. Create a shared secret:
+
+```console
+$ openssl rand -hex 16
+bea26a2221fd8090ea38720fc445eca6
+```
+
+3. Download and run the plugin:
+
+```console
+$ docker run -d \
+  --publish=3000:3000 \
+  --env=DRONE_DEBUG=true \
+  --env=DRONE_SECRET=bea26a2221fd8090ea38720fc445eca6 \
+  --env=TOKEN=9e6eij3ckzvpe9mrhnqcis6zf8dhopmm46e3pi96 \
+  --env=PROVIDER=gitea \
+  --env=GITEA_SERVER=https://your-gitea-server \
+  --restart=always \
+  --name=converter meltwater/drone-convert-pathschanged
+```
+
+4. Update your Drone server configuration to include the plugin address and the shared secret.
+
+```text
+DRONE_CONVERT_PLUGIN_ENDPOINT=http://1.2.3.4:3000
+DRONE_CONVERT_PLUGIN_SECRET=bea26a2221fd8090ea38720fc445eca6
+```
+
 ## Examples
 
 This extension uses [doublestar](https://github.com/bmatcuk/doublestar) for matching paths changed in your commit range, refer to their documentation for all supported patterns.
@@ -180,6 +215,7 @@ This extension uses [doublestar](https://github.com/bmatcuk/doublestar) for matc
 ### `include`
 
 Only run a pipeline when `README.md` is changed:
+
 ```yaml
 ---
 kind: pipeline
@@ -188,67 +224,70 @@ name: readme
 trigger:
   paths:
     include:
-    - README.md
+      - README.md
 
 steps:
-- name: message
-  image: busybox
-  commands:
-  - echo "README.md was changed”
+  - name: message
+    image: busybox
+    commands:
+      - echo "README.md was changed”
 ```
 
 Only run a pipeline step when `README.md` is changed:
+
 ```yaml
 ---
 kind: pipeline
 name: readme
 
 steps:
-- name: message
-  image: busybox
-  commands:
-  - echo "README.md was changed”
-  when:
-    paths:
-      include:
-      - README.md
+  - name: message
+    image: busybox
+    commands:
+      - echo "README.md was changed”
+    when:
+      paths:
+        include:
+          - README.md
 ```
 
 Same as above, but with an implicit `include`:
+
 ```yaml
 ---
 kind: pipeline
 name: readme
 
 steps:
-- name: message
-  image: busybox
-  commands:
-  - echo "README.md was changed”
-  when:
-    paths:
-    - README.md
+  - name: message
+    image: busybox
+    commands:
+      - echo "README.md was changed”
+    when:
+      paths:
+        - README.md
 ```
 
 ### `include` and `exclude`
 
 Run a pipeline step when `.yml` files are changed in the root, except for `.drone.yml`:
+
 ```yaml
 ---
 kind: pipeline
 name: yaml
 
 steps:
-- name: message
-  image: busybox
-  commands:
-  - echo "A .yml file in the root of the repo other than .drone.yml was changed"
-  when:
-    paths:
-      include:
-      - "*.yml"
-      exclude:
-      - .drone.yml
+  - name: message
+    image: busybox
+    commands:
+      - echo "A .yml file in the root of the repo other than .drone.yml was changed"
+    when:
+      paths:
+        include:
+          - "*.yml"
+        exclude:
+          - .drone.yml
 ```
 
 ### `depends_on`
@@ -256,31 +295,32 @@ steps:
 When using [`depends_on`](https://docker-runner.docs.drone.io/configuration/parallelism/) in a pipeline step, ensure the `paths` rules match, otherwise your steps may run out of order.
 
 Only run two steps when `README.md` is changed, one after the other:
+
 ```yaml
 ---
 kind: pipeline
 name: depends_on
 
 steps:
-- name: message
-  image: busybox
-  commands:
-  - echo "README.md was changed”
-  when:
-    paths:
-      include:
-      - README.md
+  - name: message
+    image: busybox
+    commands:
+      - echo "README.md was changed”
+    when:
+      paths:
+        include:
+          - README.md
 
-- name: depends_on_message
-  depends_on:
-  - message
-  image: busybox
-  commands:
-  - echo "This step runs after the message step"
-  when:
-    paths:
-      include:
-      - README.md
+  - name: depends_on_message
+    depends_on:
+      - message
+    image: busybox
+    commands:
+      - echo "This step runs after the message step"
+    when:
+      paths:
+        include:
+          - README.md
 ```
 
 ## Changesets
@@ -329,7 +369,7 @@ anchor: &anchor
   settings:
     foo: bar
 
-- <<: *anchor 
+- <<: *anchor
   name: test
   when:
     event: push
@@ -345,6 +385,6 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) to understand how to submit pull 
 When this plugin is used in conjunction with [protected repos](https://docs.drone.io/signature/),
 signature validation will frequently fail.
 
-This occurs due to Drone's order of operations, in that the Drone file's 
-signature is checked after the this plugin has rewritten sections based on 
+This occurs due to Drone's order of operations, in that the Drone file's
+signature is checked after the this plugin has rewritten sections based on
 the paths-changed triggers, resulting in a different signature for the file.
