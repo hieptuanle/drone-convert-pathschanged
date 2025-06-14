@@ -7,7 +7,7 @@ Please note we have a [code of conduct](CODE_OF_CONDUCT.md) that we ask you to f
 
 **IMPORTANT: Please do not create a Pull Request without creating an issue first.**
 
-*Any change needs to be discussed before proceeding. Failure to do so may result in the rejection of the pull request.*
+_Any change needs to be discussed before proceeding. Failure to do so may result in the rejection of the pull request._
 
 Thank you for your pull request. Please provide a description above and review
 the requirements below.
@@ -16,12 +16,12 @@ the requirements below.
 
 0. Check out [Pull Request Checklist](#pull-request-checklist), ensure you have fulfilled each step.
 1. Check out guidelines below, the project tries to follow these, ensure you have fulfilled them as much as possible.
-    * [Effective Go](https://golang.org/doc/effective_go.html)
-    * [Go Code Review Comments](https://github.com/golang/go/wiki/CodeReviewComments)
+   - [Effective Go](https://golang.org/doc/effective_go.html)
+   - [Go Code Review Comments](https://github.com/golang/go/wiki/CodeReviewComments)
 2. Ensure any install or build dependencies are removed before the end of the layer when doing a
    build.
 3. Please ensure the [README](README.md) and [DOCS](./DOCS.md) are up-to-date with details of changes to the command-line interface,
-    this includes new environment variables, exposed ports, used file locations, and container parameters.
+   this includes new environment variables, exposed ports, used file locations, and container parameters.
 4. **PLEASE ENSURE YOU DO NOT INTRODUCE BREAKING CHANGES.**
 5. **PLEASE ENSURE BUG FIXES AND NEW FEATURES INCLUDE TESTS.**
 6. You may merge the Pull Request in once you have the sign-off of one other maintainer/code owner,
@@ -34,16 +34,15 @@ the requirements below.
 - [ ] Add tests to cover changes.
 - [ ] Ensure your code follows the code style of this project.
 - [ ] Ensure CI and all other PR checks are green OR
-    - [ ] Code compiles correctly.
-    - [ ] Created tests which fail without the change (if possible).
-    - [ ] All new and existing tests passed.
+  - [ ] Code compiles correctly.
+  - [ ] Created tests which fail without the change (if possible).
+  - [ ] All new and existing tests passed.
 - [ ] Add your changes to `Unreleased` section of [CHANGELOG](CHANGELOG.md).
 - [ ] Improve and update the [README](README.md) (if necessary).
 
-
 ## Release Process
 
-*Only concerns maintainers/code owners*
+_Only concerns maintainers/code owners_
 
 0. **PLEASE DO NOT INTRODUCE BREAKING CHANGES**
 1. Update `README.md`with the latest changes.
@@ -54,14 +53,20 @@ the requirements below.
 4. Update version references.
 5. Create a tag on the master. This will trigger drone build and new images are pushed into DockerHub with the version references.
 
-    ```console
-    $ git tag -am 'vX.X.X'
-    > ...
-    $ git push --tags
-    > ...
-    ```
+   ```console
+   $ git tag -am 'vX.X.X'
+   > ...
+   $ git push --tags
+   > ...
+   ```
 
 > **Keep in mind that users usually use the `latest` tagged images in their pipeline, please make sure you do not interfere with their working workflow.**
+
+## Build and Push Docker Image
+
+```bash
+docker buildx build -f ./docker/Dockerfile --platform linux/amd64,linux/arm64 -t hieptuanle/drone-convert-pathschanged:latest --push .
+```
 
 ## Testing Locally
 
@@ -87,12 +92,10 @@ $ drone plugins convert --path .drone.yml --before _SHA_ --after _SHA_ --ref ref
 ## Response Times
 
 **Please note the below timeframes are response windows we strive to meet. Please understand we may not always be able to respond in the exact timeframes outlined below**
+
 - New issues will be reviewed and acknowledged with a message sent to the submitter within two business days
-    - ***Please ensure all of your pull requests have an associated issue.***
+  - **_Please ensure all of your pull requests have an associated issue._**
 - The ticket will then be groomed and planned as regular sprint work and an estimated timeframe of completion will be communicated to the submitter.
 - Once the ticket is complete, a final message will be sent to the submitter letting them know work is complete.
 
-***Please feel free to ping us if you have not received a response after one week***
-
-
-
+**_Please feel free to ping us if you have not received a response after one week_**
